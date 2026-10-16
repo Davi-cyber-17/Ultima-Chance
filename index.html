@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050814">
+  <meta name="color-scheme" content="dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Ultima Chance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <noscript>Ative o JavaScript para jogar.</noscript>
+
+  <main id="app">
+
+    <!-- ===== MENU ===== -->
+    <section id="screen-menu" class="screen active">
+      <div class="panel center">
+        <div id="menu-logo" class="menu-logo" aria-hidden="true"></div>
+        <h1 class="title">Ultima Chance</h1>
+        <p class="sub">Descubra a palavra antes que o boneco seja enforcado.</p>
+        <button id="btn-online" class="btn big primary">Modo Online</button>
+        <button id="btn-local" class="btn big">Modo Local</button>
+      </div>
+    </section>
+
+    <!-- ===== ONLINE: nome + criar/entrar ===== -->
+    <section id="screen-online" class="screen">
+      <div class="panel">
+        <button class="btn small back" data-back>Voltar</button>
+        <h2>Modo Online</h2>
+
+        <div class="field">
+          <label for="in-name">Seu nome</label>
+          <input id="in-name" type="text" maxlength="14" placeholder="Como quer ser chamado?" autocomplete="nickname">
+        </div>
+
+        <button id="btn-create" class="btn big primary">Criar sala</button>
+
+        <div class="or"><span>ou entre em uma sala</span></div>
+
+        <div class="field">
+          <label for="in-code">Código da sala</label>
+          <input id="in-code" class="code-input" type="text" maxlength="6" placeholder="ABC12" autocapitalize="characters" autocomplete="off" spellcheck="false">
+        </div>
+        <button id="btn-join" class="btn big">Entrar na sala</button>
+
+        <p id="online-msg" class="msg" role="status"></p>
+      </div>
+    </section>
+
+    <!-- ===== LOCAL: configuração ===== -->
+    <section id="screen-local" class="screen">
+      <div class="panel">
+        <button class="btn small back" data-back>Voltar</button>
+        <h2>Modo Local</h2>
+        <p class="hint">Todos jogam no mesmo aparelho, um de cada vez.</p>
+
+        <div class="field">
+          <span class="label">Jogadores</span>
+          <div class="stepper">
+            <button id="lc-minus" class="btn small" aria-label="Menos um jogador">−</button>
+            <output id="lc-count" aria-live="polite">2</output>
+            <button id="lc-plus" class="btn small" aria-label="Mais um jogador">+</button>
+          </div>
+        </div>
+
+        <div id="lc-names" class="names"></div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="lc-rounds">Rodadas</label>
+            <select id="lc-rounds"></select>
+          </div>
+          <div class="field">
+            <label for="lc-time">Tempo por jogada</label>
+            <select id="lc-time"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="lc-cat">Categoria</label>
+          <select id="lc-cat"></select>
+        </div>
+
+        <button id="btn-local-start" class="btn big primary">Começar jogo</button>
+      </div>
+    </section>
+
+    <!-- ===== SALA (LOBBY) ===== -->
+    <section id="screen-lobby" class="screen">
+      <div class="panel">
+        <div class="row-between">
+          <h2>Sala de espera</h2>
+          <button id="btn-lobby-leave" class="btn small">Sair da sala</button>
+        </div>
+
+        <div class="code-box">
+          <div>
+            <span class="label">Código da sala</span>
+            <div id="lb-code" class="code">-----</div>
+          </div>
+          <div class="code-actions">
+            <button id="btn-copy-code" class="btn small">Copiar código</button>
+            <button id="btn-copy-link" class="btn small">Copiar link</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="row-between">
+            <h3>Jogadores</h3>
+            <span id="lb-count" class="hint"></span>
+          </div>
+          <ul id="lb-players" class="plist"></ul>
+        </div>
+
+        <div class="settings">
+          <div class="grid-2">
+            <div class="field">
+              <label for="lb-max">Máximo de jogadores</label>
+              <select id="lb-max"></select>
+            </div>
+            <div class="field">
+              <label for="lb-rounds">Rodadas</label>
+              <select id="lb-rounds"></select>
+            </div>
+            <div class="field">
+              <label for="lb-time">Tempo por jogada</label>
+              <select id="lb-time"></select>
+            </div>
+            <div class="field">
+              <label for="lb-cat">Categoria</label>
+              <select id="lb-cat"></select>
+            </div>
+          </div>
+        </div>
+
+        <p id="lb-hint" class="hint"></p>
+        <button id="btn-start" class="btn big primary">Iniciar jogo</button>
+      </div>
+    </section>
+
+    <!-- ===== JOGO ===== -->
+    <section id="screen-game" class="screen">
+      <div class="game-wrap">
+        <div class="game-top">
+          <button id="btn-leave-game" class="btn small">Sair</button>
+          <div class="chips">
+            <span id="g-round" class="chip"></span>
+            <span id="g-cat" class="chip"></span>
+            <span id="g-net" class="chip net" hidden><i class="dot"></i><span id="g-net-text"></span></span>
+          </div>
+        </div>
+
+        <div class="game-layout">
+          <aside class="players-panel">
+            <h3>Jogadores</h3>
+            <ul id="g-players" class="plist compact"></ul>
+          </aside>
+
+          <div class="board">
+            <div class="turn-row">
+              <div id="g-turn" class="turn-banner"></div>
+              <span id="g-time" class="time"></span>
+            </div>
+            <div class="timer" aria-hidden="true"><div id="g-timer-bar"></div></div>
+
+            <div class="stage">
+              <div id="g-gallows-wrap" class="gallows-wrap" aria-hidden="true"></div>
+              <div id="g-word" class="word" role="img"></div>
+            </div>
+
+            <p id="g-event" class="event" aria-live="polite"></p>
+
+            <div id="g-keys" class="keys" role="group" aria-label="Letras"></div>
+
+            <div class="under-keys">
+              <p class="errs">Erros: <b id="g-errs">0</b> de 6 <span id="g-wrong" class="wrong"></span></p>
+              <button id="btn-guess-word" class="btn">Chutar a palavra</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fim de rodada -->
+      <div id="ov-round" class="overlay" role="dialog" aria-modal="true" aria-labelledby="or-title">
+        <div class="card">
+          <h2 id="or-title"></h2>
+          <p class="hint">A palavra era</p>
+          <div id="or-word" class="reveal"></div>
+          <p id="or-msg" class="msg-line"></p>
+          <ol id="or-rank" class="rank"></ol>
+          <p id="or-count" class="hint"></p>
+          <button id="btn-next" class="btn big primary">Próxima rodada</button>
+          <p id="or-wait" class="hint">Aguardando o anfitrião...</p>
+        </div>
+      </div>
+
+      <!-- Resultado final -->
+      <div id="ov-final" class="overlay" role="dialog" aria-modal="true" aria-labelledby="of-title">
+        <div class="card">
+          <h2 id="of-title">Resultado final</h2>
+          <ol id="of-rank" class="rank big"></ol>
+          <button id="btn-again" class="btn big primary">Jogar novamente</button>
+          <button id="btn-final-exit" class="btn big">Voltar ao menu</button>
+          <p id="of-wait" class="hint">Aguardando o anfitrião...</p>
+        </div>
+      </div>
+
+      <!-- Chutar palavra -->
+      <div id="ov-word" class="overlay" role="dialog" aria-modal="true" aria-labelledby="ow-title">
+        <div class="card">
+          <h2 id="ow-title">Chutar a palavra</h2>
+          <p class="hint">Acertar vale pontos extras. Errar conta como um erro.</p>
+          <input id="in-word" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Palavra">
+          <div class="grid-2">
+            <button id="btn-word-cancel" class="btn">Cancelar</button>
+            <button id="btn-word-ok" class="btn primary">Chutar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- PeerJS: conexão direta entre jogadores (modo online) -->
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script>window.Peer || document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
+  <script src="script.js"></script>
+</body>
+</html>
